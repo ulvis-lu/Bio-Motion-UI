@@ -1,0 +1,30 @@
+{{ d.message }}
+
+<button
+  *ngIf="d.send"
+  class="simple-button"
+  mat-button
+  color="primary"
+  type="button"
+  [disabled]="loading"
+  (click)="send()"
+>
+  <mat-progress-bar
+    *ngIf="loading; else loadingBtn"
+    mode="indeterminate"
+    class="button-progress-bar"
+  ></mat-progress-bar>
+  <ng-template #loadingBtn
+    >{{ "button-repeat-confirm-email" | translate }} &#187;</ng-template
+  >
+</button>
+
+<button
+  class="simple-button"
+  mat-button
+  type="button"
+  color="accent"
+  (click)="closeSnackbar()"
+>
+  {{ "button-close" | translate }}
+</button>

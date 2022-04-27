@@ -1,0 +1,35 @@
+<h2
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragHandle
+  class="dialog-title"
+>
+  {{ "title-alert" | translate }}
+</h2>
+
+<div class="mat-typography dialog-content dialog-content-w">
+  <div class="one-row-dialog">
+    <mat-card class="snackbar-info">
+      <mat-card-content class="simple-text">
+        <mat-icon>error_outline</mat-icon>
+        <span>
+          {{ "action-available-to-registred-users" | translate }}
+          <button mat-button color="primary" (click)="goData()">
+            {{ "button-signin" | translate }} &#187;
+          </button>
+        </span>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>
+<div class="flex-buttons dialog-buttons">
+  <span class="spacer"></span>
+  <button
+    class="simple-button"
+    mat-raised-button
+    type="button"
+    (click)="closeDialog()"
+  >
+    {{ "button-close" | translate }}
+  </button>
+</div>

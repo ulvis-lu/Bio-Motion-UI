@@ -1,0 +1,52 @@
+<h2
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragHandle
+  class="dialog-title"
+>
+  {{ "title-account-delete" | translate }}
+</h2>
+
+<form (ngSubmit)="accountDelete()">
+  <div class="mat-typography dialog-content dialog-content-w">
+    <div class="one-row-dialog">
+      <mat-card class="snackbar-info">
+        <mat-card-content class="simple-text">
+          <mat-icon>error_outline</mat-icon>
+          <span>
+            {{ "account-delete-message" | translate }}
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div class="flex-buttons dialog-buttons">
+    <span class="spacer"></span>
+    <button
+      class="simple-button"
+      mat-raised-button
+      color="accent"
+      type="button"
+      [disabled]="loading"
+      (click)="accountDelete()"
+    >
+      <mat-progress-bar
+        *ngIf="loading; else deleteBtn"
+        mode="indeterminate"
+        class="button-progress-bar"
+      ></mat-progress-bar>
+      <ng-template #deleteBtn>{{
+        "button-delete-account" | translate
+      }}</ng-template>
+    </button>
+    <button
+      cdkFocusInitial
+      class="simple-button"
+      mat-raised-button
+      type="button"
+      (click)="closeDialog()"
+    >
+      {{ "button-cancel" | translate }}
+    </button>
+  </div>
+</form>

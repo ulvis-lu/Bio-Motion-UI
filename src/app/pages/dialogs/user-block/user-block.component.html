@@ -1,0 +1,140 @@
+<h2
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragHandle
+  class="dialog-title"
+>
+  {{ "title-block-user" | translate }} {{ dialogData.name }}
+</h2>
+
+<form (ngSubmit)="block()" [formGroup]="group">
+  <div class="mat-typography dialog-content dialog-content-w">
+    <div class="one-row-dialog" *ngIf="blockOk">
+      <mat-card class="info-record-light">
+        <mat-card-content class="simple-text">
+          <mat-icon>error_outline</mat-icon>
+          <span>
+            {{ message }}
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+    <div class="one-row-dialog" *ngIf="!blockOk">
+      <div>
+        <mat-label>{{ "user-block-time-form" | translate }}</mat-label>
+      </div>
+      <mat-radio-group formControlName="blockOption">
+        <span class="radio-choose">
+          <mat-radio-button value="1">
+            {{ "user-block-no-time-limit" | translate }}
+          </mat-radio-button>
+        </span>
+        <span class="radio-choose">
+          <mat-radio-button value="2">
+            {{ "user-block-to-time" | translate }}
+          </mat-radio-button>
+        </span>
+      </mat-radio-group>
+    </div>
+
+    <div
+      class="one-row-dialog"
+      *ngIf="!blockOk && group.get('blockOption')?.value === '2'"
+    >
+      <table>
+        <tr>
+          <td>
+            <mat-form-field
+              appearance="legacy"
+              color="primary"
+              style="width: 100px"
+            >
+              <mat-label>{{ "user-block-days" | translate }}</mat-label>
+              <mat-select formControlName="days">
+                <mat-option *ngFor="let d of days" [value]="d">
+                  {{ d }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field
+              appearance="legacy"
+              color="primary"
+              style="width: 100px"
+            >
+              <mat-label>{{ "user-block-hours" | translate }}</mat-label>
+              <mat-select formControlName="hours">
+                <mat-option *ngFor="let h of hours" [value]="h">
+                  {{ h }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+          <td>
+            <mat-form-field
+              appearance="legacy"
+              color="primary"
+              style="width: 100px"
+            >
+              <mat-label>{{ "user-block-minutes" | translate }}</mat-label>
+              <mat-select formControlName="mins">
+                <mat-option *ngFor="let m of mins" [value]="m">
+                  {{ m }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="one-row-dialog" *ngIf="!blockOk">
+      <mat-form-field appearance="legacy" color="primary">
+        <mat-label>{{ "user-block-reason-form" | translate }}</mat-label>
+        <textarea formControlName="_desc" matInput required rows="7"></textarea>
+        <mat-error *ngIf="group.get('_desc')?.invalid">{{
+          getErrorMessage("_desc")
+        }}</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="flex-buttons dialog-buttons" *ngIf="!blockOk">
+    <span class="spacer"></span>
+    <button
+      cdkFocusInitial
+      class="simple-button"
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="loading"
+    >
+      <mat-progress-bar
+        *ngIf="loading; else blockBtn"
+        mode="indeterminate"
+        class="button-progress-bar"
+      ></mat-progress-bar>
+      <ng-template #blockBtn>{{ "button-block" | translate }}</ng-template>
+    </button>
+
+    <button
+      class="simple-button"
+      mat-raised-button
+      type="button"
+      (click)="closeDialog()"
+    >
+      {{ "button-cancel" | translate }}
+    </button>
+  </div>
+  <div class="flex-buttons dialog-buttons" *ngIf="blockOk">
+    <span class="spacer"></span>
+    <button
+      class="simple-button"
+      mat-raised-button
+      type="button"
+      (click)="closeDialog('block')"
+    >
+      {{ "button-close" | translate }}
+    </button>
+  </div>
+</form>

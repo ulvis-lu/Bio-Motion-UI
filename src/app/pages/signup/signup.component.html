@@ -1,0 +1,141 @@
+<form
+  *ngIf="user && !user.id && siteSettings && siteSettings.allowReg"
+  (ngSubmit)="signup()"
+  [formGroup]="group"
+>
+  <div class="flex-container">
+    <mat-card>
+      <mat-card-header
+        ><mat-card-title>
+          {{ "account-signup" | translate }}</mat-card-title
+        ></mat-card-header
+      >
+      <mat-card class="info-record-light" *ngIf="singupOk">
+        <mat-card-content class="simple-text">
+          <mat-icon>error_outline</mat-icon>
+          <span>
+            {{ message }}
+          </span>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-card-content *ngIf="!singupOk">
+        <div class="one-row">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{ "account-signup-name" | translate }}</mat-label>
+            <input formControlName="_name" matInput type="text" />
+            <button mat-icon-button matSuffix>
+              <mat-icon>emoji_people</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('_name')?.invalid">{{
+              getErrorMessage("_name")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="one-row">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{ "account-signup-email" | translate }}</mat-label>
+            <input
+              (focus)="emailRepeatShow = true"
+              (blur)="updateTmp()"
+              formControlName="email"
+              matInput
+              type="text"
+            />
+            <button mat-icon-button matSuffix>
+              <mat-icon>email</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('email')?.invalid">{{
+              getErrorMessage("email")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="one-row" *ngIf="emailRepeatShow">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{
+              "account-signup-email-repeat" | translate
+            }}</mat-label>
+            <input formControlName="emailRepeat" matInput type="text" />
+            <button mat-icon-button matSuffix>
+              <mat-icon>email</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('emailRepeat')?.invalid">{{
+              getErrorMessage("emailRepeat")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="one-row">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{ "account-signup-password" | translate }}</mat-label>
+            <input
+              (focus)="passwordRepeatShow = true"
+              (blur)="updateTmp()"
+              formControlName="password"
+              matInput
+              [type]="hide ? 'password' : 'text'"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hide = !hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('password')?.invalid">{{
+              getErrorMessage("password")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="one-row" *ngIf="passwordRepeatShow">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{
+              "account-signup-password-repeat" | translate
+            }}</mat-label>
+            <input
+              formControlName="passwordRepeat"
+              matInput
+              [type]="hide ? 'password' : 'text'"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hide = !hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('passwordRepeat')?.invalid">{{
+              getErrorMessage("passwordRepeat")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="one-row">
+          <re-captcha #captchaEl (resolved)="resolved($event)"></re-captcha>
+        </div>
+      </mat-card-content>
+      <mat-card-actions *ngIf="!singupOk" class="flex-buttons">
+        <span class="spacer"></span
+        ><button
+          class="simple-button"
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loading"
+        >
+          <mat-progress-bar
+            *ngIf="loading; else signupBtn"
+            mode="indeterminate"
+            class="button-progress-bar"
+          ></mat-progress-bar>
+          <ng-template #signupBtn>{{
+            "button-signup" | translate
+          }}</ng-template>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</form>

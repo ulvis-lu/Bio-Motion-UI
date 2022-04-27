@@ -1,0 +1,46 @@
+<div
+  [ngClass]="{
+    'xsmall-size': xSmallScreen,
+    'small-size': smallScreen,
+    'medium-size': mediumScreen
+  }"
+  [ngSwitch]="dialogData.dialogName"
+>
+  <app-user-block
+    *ngSwitchCase="'user-block'"
+    (close)="closeDialog($event)"
+    [dialogData]="dialogData.dialogData"
+  ></app-user-block>
+  <app-user-unblock
+    *ngSwitchCase="'user-unblock'"
+    (close)="closeDialog($event)"
+    [dialogData]="dialogData.dialogData"
+  ></app-user-unblock>
+  <app-account-delete
+    *ngSwitchCase="'account-delete'"
+    (close)="closeDialog($event)"
+    [dialogData]="dialogData.dialogData"
+  ></app-account-delete>
+  <app-user-confirm
+    *ngSwitchCase="'user-confirm'"
+    (close)="closeDialog($event)"
+    [dialogData]="dialogData.dialogData"
+  ></app-user-confirm>
+  <app-need-to-login
+    *ngSwitchCase="'need-to-login'"
+    (close)="closeDialog($event)"
+    [dialogData]="dialogData.dialogData"
+  ></app-need-to-login>
+
+  <app-confirm-action
+    *ngSwitchCase="'confirm-action'"
+    (close)="closeDialog($event)"
+    [dialogData]="dialogData.dialogData"
+  ></app-confirm-action>
+
+  <app-query-result
+    *ngSwitchCase="'query-result'"
+    (close)="closeDialog($event)"
+    [dialogData]="dialogData.dialogData"
+  ></app-query-result>
+</div>

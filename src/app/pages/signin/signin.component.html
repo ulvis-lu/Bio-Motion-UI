@@ -1,0 +1,106 @@
+<form
+  *ngIf="user && !user.id && siteSettings && siteSettings.allowAuth"
+  (ngSubmit)="signin()"
+  [formGroup]="group"
+>
+  <div class="center-container" [ngStyle]="{ height: h + 'px' }">
+    <mat-card>
+      <mat-card-content>
+        <div class="one-row">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{ "account-signin-email" | translate }}</mat-label>
+            <input formControlName="email" matInput type="text" />
+            <button mat-icon-button matSuffix>
+              <mat-icon>email</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('email')?.invalid">{{
+              getErrorMessage("email")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="one-row">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{ "account-signin-password" | translate }}</mat-label>
+            <input
+              formControlName="password"
+              matInput
+              [type]="hide ? 'password' : 'text'"
+            />
+            <button
+              mat-icon-button
+              matSuffix
+              type="button"
+              (click)="hide = !hide"
+            >
+              <mat-icon>{{ hide ? "visibility_off" : "visibility" }}</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('password')?.invalid">{{
+              getErrorMessage("password")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="one-row">
+          <mat-checkbox formControlName="remember">{{
+            "account-remember-me" | translate
+          }}</mat-checkbox>
+        </div>
+      </mat-card-content>
+
+      <div class="pb12">
+        <mat-card-actions class="flex-buttons">
+          <button
+            *ngIf="siteSettings && siteSettings.allowReg"
+            class="simple-button"
+            mat-button
+            color="primary"
+            routerLink="/signup"
+          >
+            {{ "button-signup" | translate }} &#187;
+          </button>
+          <span class="spacer"></span>
+          <button
+            class="simple-button"
+            mat-button
+            color="primary"
+            routerLink="/password-recover"
+          >
+            {{ "button-forger-password" | translate }}
+          </button>
+
+          <button
+            class="simple-button"
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="loading"
+          >
+            <mat-progress-bar
+              *ngIf="loading; else signinBtn"
+              mode="indeterminate"
+              class="button-progress-bar"
+            ></mat-progress-bar>
+            <ng-template #signinBtn>{{
+              "button-signin" | translate
+            }}</ng-template>
+          </button>
+        </mat-card-actions>
+      </div>
+      <mat-divider></mat-divider>
+      <div class="login-social">
+        <span (click)="fbLogin()" class="login-facebook">
+          <span class="img"></span>
+          <span class="text">
+            <mat-progress-bar
+              *ngIf="loadingFb; else fbBtn"
+              mode="indeterminate"
+              class="button-progress-bar"
+            ></mat-progress-bar>
+            <ng-template #fbBtn>
+              {{ "button-facebook" | translate }}
+            </ng-template>
+          </span>
+        </span>
+      </div>
+    </mat-card>
+  </div>
+</form>

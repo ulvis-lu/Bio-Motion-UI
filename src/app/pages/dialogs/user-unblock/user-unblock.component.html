@@ -1,0 +1,72 @@
+<h2
+  cdkDrag
+  cdkDragRootElement=".cdk-overlay-pane"
+  cdkDragHandle
+  class="dialog-title"
+>
+  {{ "title-unblock-user" | translate }} {{ dialogData.name }}
+</h2>
+
+<form (ngSubmit)="unblock()">
+  <div class="mat-typography dialog-content dialog-content-w">
+    <div class="one-row-dialog" *ngIf="unblockOk">
+      <mat-card class="info-record-light">
+        <mat-card-content class="simple-text">
+          <mat-icon>error_outline</mat-icon>
+          <span>
+            {{ message }}
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+
+    <div class="one-row-dialog" *ngIf="!unblockOk">
+      <mat-card class="snackbar-info">
+        <mat-card-content class="simple-text">
+          <mat-icon>error_outline</mat-icon>
+          <span>
+            {{ "user-unblocked-and-can-use-site" | translate }}
+          </span>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+  <div class="flex-buttons dialog-buttons" *ngIf="!unblockOk">
+    <span class="spacer"></span>
+    <button
+      cdkFocusInitial
+      class="simple-button"
+      mat-raised-button
+      color="primary"
+      type="submit"
+      [disabled]="loading"
+    >
+      <mat-progress-bar
+        *ngIf="loading; else unblockBtn"
+        mode="indeterminate"
+        class="button-progress-bar"
+      ></mat-progress-bar>
+      <ng-template #unblockBtn>{{ "button-unblock" | translate }}</ng-template>
+    </button>
+
+    <button
+      class="simple-button"
+      mat-raised-button
+      type="button"
+      (click)="closeDialog()"
+    >
+      {{ "button-cancel" | translate }}
+    </button>
+  </div>
+  <div class="flex-buttons dialog-buttons" *ngIf="unblockOk">
+    <span class="spacer"></span>
+    <button
+      class="simple-button"
+      mat-raised-button
+      type="button"
+      (click)="closeDialog('unblock')"
+    >
+      {{ "button-close" | translate }}
+    </button>
+  </div>
+</form>

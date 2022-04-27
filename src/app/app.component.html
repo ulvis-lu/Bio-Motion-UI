@@ -1,0 +1,226 @@
+<mat-progress-bar
+  *ngIf="loading"
+  mode="indeterminate"
+  class="top-progress-bar"
+></mat-progress-bar>
+<div class="container">
+  <mat-toolbar color="primary">
+    <button
+      mat-icon-button
+      *ngIf="
+        !newWindow && firstLoad && (drawerStyle !== 'side' || mediumScreen)
+      "
+    >
+      <mat-icon
+        (click)="opened = !opened"
+        [matBadge]="displayCount(user.data['all'])"
+        matBadgeColor="accent"
+        [matBadgeHidden]="!user.data['all']"
+        >menu</mat-icon
+      >
+    </button>
+    <span class="title" routerLink="/">{{ title }}</span>
+
+    <ng-container *ngIf="firstLoad; else waitForData">
+      <div *ngIf="!opened && !xSmallScreen && !smallScreen">
+        <ng-container *ngFor="let item of menuItems">
+          <button
+            *ngIf="item.type === 0 && menuAllow(item)"
+            class="menu-button-icon menu-button-top"
+            mat-button
+            [routerLink]="item.url"
+            (click)="itemFn(item)"
+            [ngClass]="item.color ? item.color : ''"
+          >
+            <mat-icon>{{ item.icon }}</mat-icon>
+            <span class="text">{{ item.name }}</span>
+          </button>
+        </ng-container>
+      </div>
+
+      <span class="spacer"></span>
+
+      <button
+        class="menu-button-icon"
+        mat-button
+        [matMenuTriggerFor]="menuLang"
+      >
+        <span class="flag-icon flag-icon-{{ langSuffix() }}"></span>
+        <span class="text">{{ lang }}</span>
+      </button>
+      <mat-menu #menuLang="matMenu">
+        <button
+          class="menu-button-icon"
+          mat-menu-item
+          (click)="changeLanguage('lv')"
+        >
+          <span class="flag-icon flag-icon-lv"></span>
+          <span class="text">LV</span>
+        </button>
+        <button
+          class="menu-button-icon"
+          mat-menu-item
+          (click)="changeLanguage('en')"
+        >
+          <span class="flag-icon flag-icon-gb"></span>
+          <span class="text">EN</span>
+        </button>
+      </mat-menu>
+
+      <ng-container *ngIf="(siteSettings && siteSettings.allowAuth) || user.id">
+        <ng-container *ngIf="!user.id; else userSignin">
+          <button
+            *ngIf="!xSmallScreen && !smallScreen; else smSignin"
+            class="menu-button-icon"
+            mat-button
+            routerLink="/signin"
+          >
+            <mat-icon>login</mat-icon>
+            <span class="text">{{ "menu-signin" | translate }}</span>
+          </button>
+          <ng-template #smSignin>
+            <button
+              class="menu-button-icon"
+              mat-icon-button
+              routerLink="/signin"
+            >
+              <mat-icon>login</mat-icon>
+            </button>
+          </ng-template>
+        </ng-container>
+        <ng-template #userSignin>
+          <button
+            *ngIf="!xSmallScreen && !smallScreen; else smUser"
+            class="menu-button-icon"
+            mat-button
+            [matMenuTriggerFor]="menuUser"
+          >
+            <mat-icon>emoji_people</mat-icon>
+            <span class="text">{{ user.name }}</span>
+          </button>
+          <ng-template #smUser>
+            <button
+              class="menu-button-icon"
+              mat-icon-button
+              [matMenuTriggerFor]="menuUser"
+            >
+              <mat-icon>emoji_people</mat-icon>
+            </button>
+          </ng-template>
+
+          <mat-menu #menuUser="matMenu">
+            <button
+              class="menu-button-icon"
+              mat-menu-item
+              routerLink="/account/info"
+            >
+              <mat-icon>contact_page</mat-icon>
+              <span class="text">{{ "menu-basic-info" | translate }}</span>
+            </button>
+            <button
+              class="menu-button-icon"
+              mat-menu-item
+              routerLink="/account/settings"
+            >
+              <mat-icon>settings</mat-icon>
+              <span class="text">{{ "menu-settings" | translate }}</span>
+            </button>
+            <mat-divider></mat-divider>
+            <button
+              class="menu-button-icon"
+              mat-menu-item
+              routerLink="/signout"
+            >
+              <mat-icon>logout</mat-icon>
+              <span class="text">{{ "menu-signout" | translate }}</span>
+            </button>
+          </mat-menu>
+        </ng-template>
+      </ng-container>
+    </ng-container>
+    <ng-template #waitForData>
+      <span class="spacer"></span>
+
+      <button class="menu-button-icon" mat-button color="primary">
+        <mat-progress-bar
+          mode="indeterminate"
+          class="button-progress-bar"
+        ></mat-progress-bar>
+      </button>
+    </ng-template>
+  </mat-toolbar>
+
+  <mat-drawer-container
+    class="sidenav-container"
+    #drawerContainer
+    cdkScrollable
+  >
+    <mat-drawer
+      [mode]="drawerStyle"
+      class="drawer"
+      [opened]="opened"
+      (closedStart)="opened = false"
+      *ngIf="!newWindow && firstLoad"
+    >
+      <div *ngFor="let item of menuItems">
+        <button
+          *ngIf="
+            (item.type !== 2 || user.id) &&
+            (item.type !== 3 || (user.id && user.statuss === 2)) &&
+            (item.type !== 4 || (item.type === 4 && !user.id)) &&
+            menuAllow(item)
+          "
+          class="menu-button-icon menu-button-side"
+          mat-button
+          [routerLink]="item.url"
+          (click)="itemFn(item)"
+          [class]="item.color ? item.color : ''"
+          [ngClass]="{ 'active-url': checkMenuUrl(item.url) }"
+        >
+          <mat-icon>{{ item.icon }}</mat-icon>
+
+          <span
+            class="text"
+            [matBadge]="displayCount(user.data[item.count])"
+            matBadgeOverlap="false"
+            matBadgeColor="primary"
+            matBadgePosition="before"
+            [matBadgeHidden]="!user.data[item.count]"
+          >
+            {{ item.name }}
+          </span>
+        </button>
+      </div>
+      <div class="side-info">
+        {{ footerText }}
+        <br />
+        <a routerLink="/contacts">{{ "menu-contacts" | translate }}</a>
+      </div>
+    </mat-drawer>
+    <div
+      class="content"
+      [ngClass]="{
+        'xsmall-size': xSmallScreen,
+        'small-size': smallScreen,
+        'medium-size': mediumScreen
+      }"
+    >
+      <div class="content-wrapper">
+        <router-outlet *ngIf="firstLoad"></router-outlet>
+        <ng-container *ngIf="!firstLoad && !loading && !loadingStatuss">
+          <mat-card class="container-wrapper">
+            <mat-card-content class="simple-text">
+              <mat-icon>error_outline</mat-icon>
+              <span
+                >{{ "cant-get-data" | translate }}
+                <button mat-button color="primary" (click)="getData()">
+                  {{ "try-again" | translate }} &#187;
+                </button>
+              </span>
+            </mat-card-content>
+          </mat-card>
+        </ng-container>
+      </div>
+    </div>
+  </mat-drawer-container>
+</div>

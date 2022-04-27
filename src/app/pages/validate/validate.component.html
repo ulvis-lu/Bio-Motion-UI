@@ -1,0 +1,11 @@
+<mat-card class="container-wrapper" *ngIf="message.length">
+  <mat-card-content class="simple-text">
+    <mat-icon>error_outline</mat-icon>
+    <span>
+      {{ message }}
+      <button *ngIf="type === 1" mat-button color="primary" (click)="goData()">
+        {{ "button-signin" | translate }} &#187;
+      </button>
+    </span>
+  </mat-card-content>
+</mat-card>

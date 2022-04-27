@@ -1,0 +1,546 @@
+<div
+  *ngIf="pageIdChecked && pageIdInvalid && user && user.id"
+  class="container-wrapper"
+>
+  <mat-card>
+    <mat-card-content class="simple-text">
+      <mat-icon>error_outline</mat-icon>
+      <span> {{ "data-no-test-info" | translate }} </span>
+    </mat-card-content>
+  </mat-card>
+</div>
+
+<div
+  class="container-wrapper"
+  *ngIf="
+    ((pageId === 'new' && firstLoad) || (pageIdChecked && !pageIdInvalid)) &&
+    user &&
+    user.id
+  "
+>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>{{ edit ? title : testName.value }}</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <mat-divider></mat-divider>
+
+      <ng-container *ngIf="pageId !== 'new' && !edit">
+        <div class="pt4">
+          <div class="one-row">
+            <mat-form-field
+              appearance="legacy"
+              color="primary"
+              (click)="copyUrl()"
+            >
+              <mat-label>{{ "test-link" | translate }}</mat-label>
+              <input [formControl]="url" matInput type="text" />
+              <button mat-icon-button matSuffix>
+                <mat-icon>link</mat-icon>
+              </button>
+            </mat-form-field>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+      </ng-container>
+
+      <ng-container *ngIf="edit; else noEditContent">
+        <div class="pt4">
+          <div class="one-row">
+            <mat-form-field appearance="legacy" color="primary">
+              <mat-label>{{ "test-name" | translate }}</mat-label>
+              <input
+                [formControl]="testName"
+                matInput
+                type="text"
+                #testNameInput
+              />
+              <mat-error *ngIf="testName.invalid">{{
+                getErrorMessage("testName")
+              }}</mat-error>
+            </mat-form-field>
+          </div>
+          <mat-divider></mat-divider>
+        </div>
+
+        <ng-container *ngFor="let item of canvas">
+          <div [id]="'canvasContainerId' + item.id">
+            <div class="pt8">
+              <div class="one-row one-row-title">
+                {{ "test-task" | translate }} #{{ item.id }}
+                <button
+                  mat-icon-button
+                  class="menu-button-icon small-icon simple-link"
+                  (click)="deleteTask(item.id)"
+                >
+                  <mat-icon>close</mat-icon>
+                </button>
+              </div>
+            </div>
+
+            <div class="test-option-flex">
+              <div>
+                <div class="one-row">
+                  <mat-form-field appearance="legacy" color="primary">
+                    <mat-label>{{
+                      "test-biomotion-type" | translate
+                    }}</mat-label>
+                    <mat-select [formControl]="item.bioType">
+                      <mat-option *ngFor="let y of types" [value]="y.id">
+                        {{ y.name }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <div>
+                <div class="one-row">
+                  <mat-form-field appearance="legacy" color="primary">
+                    <mat-label class="sm-label">{{
+                      "test-dots-and-lines-color" | translate
+                    }}</mat-label>
+                    <input
+                      matInput
+                      [ngxMatColorPicker]="picker"
+                      [formControl]="item.color"
+                    />
+                    <ngx-mat-color-toggle
+                      matSuffix
+                      [for]="picker"
+                    ></ngx-mat-color-toggle>
+                    <div
+                      class="color-preview cursor-pointer"
+                      (click)="picker.open()"
+                      [ngStyle]="{ 'background-color': item.color.value?.rgba }"
+                      matPrefix
+                    ></div>
+                    <ngx-mat-color-picker #picker></ngx-mat-color-picker>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label">
+                    {{ "test-biomotion-size" | translate }}: {{ item.bioSize }}%
+                  </mat-label>
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="20"
+                      max="100"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.bioSize"
+                      (change)="setValue($event, item.id, 'bioSize')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label">
+                    {{ "test-placement-horizontal" | translate }}:
+                    {{ item.placementX }}%
+                  </mat-label>
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="0"
+                      max="100"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.placementX"
+                      (change)="setValue($event, item.id, 'placementX')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label">
+                    {{ "test-placement-vertical" | translate }}:
+                    {{ item.placementY }}%
+                  </mat-label>
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="0"
+                      max="100"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.placementY"
+                      (change)="setValue($event, item.id, 'placementY')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label"
+                    >{{ "test-viewpoint-x" | translate }}: {{ item.viewpointX }}
+                    <span class="sup"><span>o</span></span>
+                  </mat-label>
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="0"
+                      max="360"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.viewpointX"
+                      (change)="setValue($event, item.id, 'viewpointX')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label"
+                    >{{ "test-viewpoint-y" | translate }}: {{ item.viewpointY }}
+                    <span class="sup"><span>o</span></span>
+                  </mat-label>
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="0"
+                      max="360"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.viewpointY"
+                      (change)="setValue($event, item.id, 'viewpointY')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label"
+                    >{{ "test-viewpoint-z" | translate }}: {{ item.viewpointZ }}
+                    <span class="sup"><span>o</span></span>
+                  </mat-label>
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="0"
+                      max="360"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.viewpointZ"
+                      (change)="setValue($event, item.id, 'viewpointZ')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label"
+                    >{{ "test-dot-size" | translate }}:
+                    {{ item.size }}px</mat-label
+                  >
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="3"
+                      max="10"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.size"
+                      (change)="changeSize($event, item.id)"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label"
+                    >{{ "test-noise-count" | translate }}:
+                    {{ item.noiseCount }}%</mat-label
+                  >
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="0"
+                      max="100"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.noiseCount"
+                      (change)="setValue($event, item.id, 'noiseCount')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="one-row">
+                  <mat-label class="sm-label"
+                    >{{ "test-noise-direction" | translate }}:
+                    {{ item.noiseDirection
+                    }}<span class="sup"><span>o</span></span></mat-label
+                  >
+                  <div class="w-range">
+                    <mat-slider
+                      color="primary"
+                      min="0"
+                      max="360"
+                      step="1"
+                      thumbLabel="true"
+                      [(ngModel)]="item.noiseDirection"
+                      (change)="setValue($event, item.id, 'noiseDirection')"
+                    ></mat-slider>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <div class="one-row">
+                  <span>
+                    <mat-slide-toggle
+                      color="accent"
+                      [formControl]="item.lines"
+                      class="sm-label"
+                      (change)="changeLines($event, item.id)"
+                    >
+                      <button
+                        class="menu-button-icon only-icon"
+                        mat-icon-button
+                        matTooltip="{{
+                          'test-dots-connecting-lines-info' | translate
+                        }}"
+                      >
+                        <mat-icon>info</mat-icon>
+                      </button>
+                      <span
+                        matTooltip="{{
+                          'test-dots-connecting-lines' | translate
+                        }}"
+                        >{{ "test-dots-connecting-lines" | translate }}</span
+                      >
+                    </mat-slide-toggle>
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="clearfix">
+              <div class="canvas-graph">
+                <div class="canvas-ratio"></div>
+                <canvas
+                  [id]="'canvasId' + item.id"
+                  width="0"
+                  height="0"
+                ></canvas>
+              </div>
+            </div>
+            <mat-divider></mat-divider></div
+        ></ng-container>
+      </ng-container>
+
+      <ng-template #noEditContent>
+        <ng-container *ngFor="let item of canvas">
+          <div [id]="'canvasContainerId' + item.id">
+            <div class="pt8">
+              <div class="one-row one-row-title">
+                {{ "test-task" | translate }} #{{ item.id }}
+              </div>
+            </div>
+
+            <div class="test-option-flex">
+              <div>
+                <mat-label class="sm-label"
+                  >{{ "test-biomotion-type" | translate }}:
+                  {{ bioTypeText(item.bioType.value) }}</mat-label
+                >
+              </div>
+
+              <div>
+                <mat-label class="sm-label">
+                  {{ "test-biomotion-size" | translate }}: {{ item.bioSize }}%
+                </mat-label>
+              </div>
+              <div>
+                <mat-label class="sm-label">
+                  {{ "test-placement-horizontal" | translate }}:
+                  {{ item.placementX }}%
+                </mat-label>
+              </div>
+              <div>
+                <mat-label class="sm-label">
+                  {{ "test-placement-vertical" | translate }}:
+                  {{ item.placementY }}%
+                </mat-label>
+              </div>
+
+              <div>
+                <mat-label class="sm-label"
+                  >{{ "test-viewpoint-x" | translate }}: {{ item.viewpointX }}
+                  <span class="sup"><span>o</span></span>
+                </mat-label>
+              </div>
+              <div>
+                <mat-label class="sm-label"
+                  >{{ "test-viewpoint-y" | translate }}: {{ item.viewpointY }}
+                  <span class="sup"><span>o</span></span>
+                </mat-label>
+              </div>
+              <div>
+                <mat-label class="sm-label"
+                  >{{ "test-viewpoint-z" | translate }}: {{ item.viewpointZ }}
+                  <span class="sup"><span>o</span></span>
+                </mat-label>
+              </div>
+
+              <div>
+                <mat-label class="sm-label"
+                  >{{ "test-dot-size" | translate }}:
+                  {{ item.size }}px</mat-label
+                >
+              </div>
+
+              <div>
+                <mat-label class="sm-label"
+                  >{{ "test-noise-count" | translate }}:
+                  {{ item.noiseCount }}%</mat-label
+                >
+              </div>
+              <div>
+                <mat-label class="sm-label"
+                  >{{ "test-noise-direction" | translate }}:
+                  {{ item.noiseDirection
+                  }}<span class="sup"><span>o</span></span></mat-label
+                >
+              </div>
+            </div>
+            <div class="clearfix">
+              <div class="canvas-graph">
+                <div class="canvas-ratio"></div>
+                <canvas
+                  [id]="'canvasId' + item.id"
+                  width="0"
+                  height="0"
+                ></canvas>
+              </div>
+            </div>
+            <mat-divider></mat-divider></div
+        ></ng-container>
+      </ng-template>
+    </mat-card-content>
+    <mat-card-actions
+      class="flex-buttons sticky-buttons"
+      *ngIf="edit; else noEditButtons"
+    >
+      <span class="spacer"></span>
+      <button
+        class="simple-button"
+        mat-raised-button
+        (click)="cancelTest()"
+        *ngIf="pageId !== 'new'"
+        [disabled]="loading"
+      >
+        <mat-progress-bar
+          *ngIf="loading; else backBtn"
+          mode="indeterminate"
+          class="button-progress-bar"
+        ></mat-progress-bar>
+        <ng-template #backBtn>{{ "button-cancel" | translate }}</ng-template>
+      </button>
+      <button
+        class="simple-button"
+        mat-raised-button
+        (click)="addNextTask()"
+        *ngIf="taskCount < taskCountMax"
+        [disabled]="loading"
+      >
+        <mat-progress-bar
+          *ngIf="loading; else addBtn"
+          mode="indeterminate"
+          class="button-progress-bar"
+        ></mat-progress-bar>
+        <ng-template #addBtn>{{ "button-add-tesk" | translate }}</ng-template>
+      </button>
+      <button
+        class="simple-button"
+        mat-raised-button
+        color="primary"
+        (click)="saveTest()"
+        *ngIf="taskCount"
+        [disabled]="loading"
+      >
+        <mat-progress-bar
+          *ngIf="loading; else saveBtn"
+          mode="indeterminate"
+          class="button-progress-bar"
+        ></mat-progress-bar>
+        <ng-template #saveBtn>{{ "button-save" | translate }}</ng-template>
+      </button>
+    </mat-card-actions>
+    <ng-template #noEditButtons>
+      <mat-card-actions class="flex-buttons sticky-buttons">
+        <span class="spacer"></span>
+        <button
+          class="simple-button"
+          mat-raised-button
+          (click)="actionTest('delete')"
+          [disabled]="loading"
+        >
+          <mat-progress-bar
+            *ngIf="loading; else deleteBtn"
+            mode="indeterminate"
+            class="button-progress-bar"
+          ></mat-progress-bar>
+          <ng-template #deleteBtn>{{
+            "button-delete" | translate
+          }}</ng-template>
+        </button>
+        <button
+          class="simple-button"
+          mat-raised-button
+          (click)="actionTest('unpublic')"
+          *ngIf="public === 1"
+          [disabled]="loading"
+        >
+          <mat-progress-bar
+            *ngIf="loading; else unpublicBtn"
+            mode="indeterminate"
+            class="button-progress-bar"
+          ></mat-progress-bar>
+          <ng-template #unpublicBtn>{{
+            "button-hide" | translate
+          }}</ng-template>
+        </button>
+        <button
+          class="simple-button"
+          mat-raised-button
+          (click)="actionTest('public')"
+          *ngIf="public === 0"
+          [disabled]="loading"
+        >
+          <mat-progress-bar
+            *ngIf="loading; else publicBtn"
+            mode="indeterminate"
+            class="button-progress-bar"
+          ></mat-progress-bar>
+          <ng-template #publicBtn>{{
+            "button-public" | translate
+          }}</ng-template>
+        </button>
+        <button
+          class="simple-button"
+          mat-raised-button
+          color="primary"
+          (click)="editTest()"
+          [disabled]="loading"
+        >
+          <mat-progress-bar
+            *ngIf="loading; else editBtn"
+            mode="indeterminate"
+            class="button-progress-bar"
+          ></mat-progress-bar>
+          <ng-template #editBtn>{{ "button-edit" | translate }}</ng-template>
+        </button>
+      </mat-card-actions>
+    </ng-template>
+  </mat-card>
+</div>
+
+<app-tests *ngIf="pageId === 'my'"></app-tests>

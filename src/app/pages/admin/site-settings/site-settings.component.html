@@ -1,0 +1,63 @@
+<div
+  class="container-wrapper"
+  *ngIf="firstLoad && user && user.id && user.statuss === 2"
+>
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>
+        {{ "global-settings" | translate }}
+      </mat-card-title>
+    </mat-card-header>
+
+    <form (ngSubmit)="save()" [formGroup]="group">
+      <mat-card class="info-record-light" *ngIf="noData; else dataContent">
+        <mat-card-content class="simple-text">
+          <mat-icon>error_outline</mat-icon>
+          <span> {{ "no-data" | translate }}</span>
+        </mat-card-content>
+      </mat-card>
+      <ng-template #dataContent>
+        <mat-card-content>
+          <div class="clearfix">
+            <div class="one-row one-row-flot mr12">
+              <mat-slide-toggle
+                color="accent"
+                formControlName="allowReg"
+                (change)="save()"
+              >
+                {{ "button-allow-signup" | translate }}
+              </mat-slide-toggle>
+            </div>
+            <div class="one-row one-row-flot mr12">
+              <mat-slide-toggle
+                color="accent"
+                formControlName="allowAuth"
+                (change)="save()"
+              >
+                {{ "button-allow-signin" | translate }}
+              </mat-slide-toggle>
+            </div>
+          </div>
+        </mat-card-content>
+
+        <mat-card-actions class="flex-buttons">
+          <span class="spacer"></span>
+          <button
+            class="simple-button"
+            mat-raised-button
+            color="primary"
+            type="submit"
+            [disabled]="loading"
+          >
+            <mat-progress-bar
+              *ngIf="loading; else saveBtn"
+              mode="indeterminate"
+              class="button-progress-bar"
+            ></mat-progress-bar>
+            <ng-template #saveBtn>{{ "button-save" | translate }}</ng-template>
+          </button>
+        </mat-card-actions>
+      </ng-template>
+    </form>
+  </mat-card>
+</div>

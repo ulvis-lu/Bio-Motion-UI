@@ -1,0 +1,149 @@
+<div
+  class="container-wrapper"
+  *ngIf="firstLoad && (pageId !== 'my' || (pageId === 'my' && user && user.id))"
+>
+  <mat-card>
+    <mat-card-header
+      ><mat-card-title>
+        {{ title }}
+        <span *ngIf="totalItems"> ({{ totalItems }})</span></mat-card-title
+      ></mat-card-header
+    >
+    <mat-card class="info-record-light" *ngIf="noData; else dataContent">
+      <mat-card-content class="simple-text">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ "data-no-tests" | translate }}</span>
+      </mat-card-content>
+    </mat-card>
+    <ng-template #dataContent>
+      <mat-card-content class="header-and-data">
+        <div class="header-row">
+          <div class="one-row-flex" style="min-width: 40%">
+            <div>{{ "tests-name" | translate }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 15%">
+            <div>{{ "tests-time-created" | translate }}</div>
+          </div>
+          <div
+            class="one-row-flex"
+            style="min-width: 15%"
+            *ngIf="pageId === 'my'"
+          >
+            <div>{{ "tests-time-edited" | translate }}</div>
+          </div>
+          <div
+            class="one-row-flex"
+            style="min-width: 10%"
+            *ngIf="pageId === 'my'"
+          >
+            <div>{{ "tests-task-count" | translate }}</div>
+          </div>
+          <div
+            class="one-row-flex"
+            style="min-width: 10%"
+            *ngIf="pageId === 'my'"
+          >
+            <div>{{ "tests-user-count" | translate }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 10%"><div></div></div>
+        </div>
+
+        <div
+          class="data-row"
+          *ngFor="
+            let test of tests
+              | paginate
+                : {
+                    id: 'bio-tests',
+                    itemsPerPage: itemsPerPage,
+                    currentPage: currentPage,
+                    totalItems: totalItems
+                  }
+          "
+        >
+          <div class="one-row-flex" style="min-width: 40%">
+            <div>{{ test.name }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 15%">
+            <div>{{ test.date }}</div>
+          </div>
+          <div
+            class="one-row-flex"
+            style="min-width: 15%"
+            *ngIf="pageId === 'my'"
+          >
+            <div>{{ test.dateEdit }}</div>
+          </div>
+          <div
+            class="one-row-flex"
+            style="min-width: 10%"
+            *ngIf="pageId === 'my'"
+          >
+            <div>{{ test.count }}</div>
+          </div>
+          <div
+            class="one-row-flex"
+            style="min-width: 10%"
+            *ngIf="pageId === 'my'"
+          >
+            <div>{{ test.users }}</div>
+          </div>
+          <div
+            class="one-row-flex right-buttons action-icons"
+            style="min-width: 10%"
+          >
+            <div>
+              <ng-container *ngIf="pageId === 'my'">
+                <button
+                  mat-icon-button
+                  class="menu-button-icon small-icon"
+                  (click)="openPage(test.id, false)"
+                  matTooltip="{{ 'button-edit' | translate }}"
+                >
+                  <mat-icon>edit</mat-icon>
+                </button>
+
+                <button
+                  mat-icon-button
+                  class="menu-button-icon small-icon"
+                  (click)="openDownload(test.id)"
+                  matTooltip="{{ 'button-download-result' | translate }}"
+                >
+                  <mat-icon>download</mat-icon>
+                </button>
+
+                <button
+                  mat-icon-button
+                  class="menu-button-icon small-icon"
+                  (click)="openResult(test.id, test.name)"
+                  matTooltip="{{ 'button-query-result' | translate }}"
+                >
+                  <mat-icon>query_stats</mat-icon>
+                </button>
+              </ng-container>
+              <button
+                mat-icon-button
+                class="menu-button-icon small-icon"
+                (click)="openPage(test.id, true)"
+                matTooltip="{{ 'button-view' | translate }}"
+              >
+                <mat-icon>visibility</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <pagination-controls
+        *ngIf="totalItems"
+        id="bio-tests"
+        (pageChange)="pageChange($event)"
+        [maxSize]="7"
+        [directionLinks]="true"
+        [autoHide]="true"
+        [responsive]="false"
+        previousLabel="{{ 'navigation-previous' | translate }}"
+        nextLabel="{{ 'navigation-next' | translate }}"
+      ></pagination-controls>
+    </ng-template>
+  </mat-card>
+</div>

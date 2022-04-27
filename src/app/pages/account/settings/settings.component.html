@@ -1,0 +1,52 @@
+<form *ngIf="user && user.id" (ngSubmit)="account()" [formGroup]="group">
+  <div class="container-wrapper">
+    <mat-card>
+      <mat-card-header
+        ><mat-card-title>{{
+          "account-settings" | translate
+        }}</mat-card-title></mat-card-header
+      >
+
+      <mat-card-content *ngIf="false">
+        <div class="one-row">SOME SETTINGS</div>
+      </mat-card-content>
+      <mat-card-actions class="flex-buttons" *ngIf="false">
+        <span class="spacer"></span>
+        <button
+          class="simple-button"
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loading"
+        >
+          <mat-progress-bar
+            *ngIf="loading; else accountBtn"
+            mode="indeterminate"
+            class="button-progress-bar"
+          ></mat-progress-bar>
+          <ng-template #accountBtn>{{ "button-save" | translate }}</ng-template>
+        </button>
+      </mat-card-actions>
+      <mat-card-content>
+        <mat-divider></mat-divider>
+        <div class="py4">
+          <div class="one-row">
+            <a
+              class="simple-link cursor-pointer"
+              routerLink="/password-recover"
+              >{{ "button-recover-password" | translate }}</a
+            >
+          </div>
+        </div>
+        <mat-divider></mat-divider>
+        <div class="pt4">
+          <div class="one-row">
+            <a class="simple-link cursor-pointer" (click)="deleteAccount()">{{
+              "button-delete-account" | translate
+            }}</a>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</form>

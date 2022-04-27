@@ -1,0 +1,132 @@
+<div
+  class="container-wrapper"
+  *ngIf="firstLoad && user && user.id && user.statuss === 2"
+>
+  <mat-card>
+    <mat-card-header
+      ><mat-card-title
+        >{{ "admin-users" | translate
+        }}<span *ngIf="totalItems"> ({{ totalItems }})</span></mat-card-title
+      ></mat-card-header
+    >
+
+    <div class="one-row">
+      <div class="pb4">
+        <mat-checkbox
+          color="accent"
+          [checked]="blocked"
+          (change)="paramsChanges($event, 'blocked')"
+        >
+          {{ "users-blocked" | translate }}
+        </mat-checkbox>
+      </div>
+      <mat-form-field appearance="legacy" color="primary" class="label-hide">
+        <mat-label>{{ "placholder-serach" | translate }}</mat-label>
+        <input
+          (keydown.enter)="onSearch($event)"
+          [formControl]="q"
+          placeholder="{{ 'placholder-serach' | translate }}"
+          autocomplete="off"
+          matInput
+          type="text"
+        />
+        <button
+          *ngIf="q.value"
+          mat-icon-button
+          matSuffix
+          (click)="q.setValue('')"
+        >
+          <mat-icon>clear</mat-icon>
+        </button>
+        <button mat-icon-button matSuffix (click)="onSearch($event)">
+          <mat-icon>search</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+
+    <mat-card class="info-record-light" *ngIf="noData; else dataContent">
+      <mat-card-content class="simple-text">
+        <mat-icon>error_outline</mat-icon>
+        <span>{{ "no-data-users" | translate }}</span>
+      </mat-card-content>
+    </mat-card>
+    <ng-template #dataContent>
+      <mat-card-content class="header-and-data">
+        <div class="header-row">
+          <div class="one-row-flex" style="min-width: 30%">
+            <div>{{ "user-name" | translate }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 30%">
+            <div>{{ "user-email" | translate }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 30%">
+            <div>{{ "user-statuss" | translate }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 10%"><div></div></div>
+        </div>
+
+        <div
+          class="data-row"
+          *ngFor="
+            let user of users
+              | paginate
+                : {
+                    id: 'admin-users',
+                    itemsPerPage: itemsPerPage,
+                    currentPage: currentPage,
+                    totalItems: totalItems
+                  }
+          "
+        >
+          <div class="one-row-flex" style="min-width: 30%">
+            <div>{{ user.name }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 30%">
+            <div>{{ user.email }}</div>
+          </div>
+          <div class="one-row-flex" style="min-width: 30%">
+            <div>
+              <div *ngIf="user.statuss === 0">
+                {{ "user-statuss-unconfirm" | translate }}
+              </div>
+              <div *ngIf="user.statuss === 1">
+                {{ "user-statuss-simple" | translate }}
+              </div>
+              <div *ngIf="user.statuss === 2">
+                {{ "user-statuss-admin" | translate }}
+              </div>
+              <div *ngIf="user.statuss === 3">
+                {{ "user-statuss-delete" | translate }}
+              </div>
+            </div>
+          </div>
+          <div
+            class="one-row-flex right-buttons action-icons"
+            style="min-width: 10%"
+          >
+            <div>
+              <button
+                mat-icon-button
+                class="menu-button-icon small-icon"
+                (click)="openPage(user.id)"
+              >
+                <mat-icon>search</mat-icon>
+              </button>
+            </div>
+          </div>
+        </div>
+      </mat-card-content>
+      <pagination-controls
+        *ngIf="totalItems"
+        id="admin-users"
+        (pageChange)="pageChange($event)"
+        [maxSize]="7"
+        [directionLinks]="true"
+        [autoHide]="true"
+        [responsive]="false"
+        previousLabel="{{ 'navigation-previous' | translate }}"
+        nextLabel="{{ 'navigation-next' | translate }}"
+      ></pagination-controls>
+    </ng-template>
+  </mat-card>
+</div>

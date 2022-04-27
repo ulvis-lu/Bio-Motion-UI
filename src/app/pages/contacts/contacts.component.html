@@ -1,0 +1,29 @@
+<div class="flex-container">
+  <mat-card>
+    <mat-card-header
+      ><mat-card-title>{{
+        "contact-info" | translate
+      }}</mat-card-title></mat-card-header
+    >
+    <mat-card-content>
+      <div class="one-row">
+        <mat-form-field appearance="legacy" color="primary">
+          <mat-label>{{ "contact-email" | translate }}</mat-label>
+          <input value="{{ email }}" matInput type="text" readonly />
+          <button mat-icon-button matSuffix>
+            <mat-icon>email</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="one-row">
+        <mat-form-field appearance="legacy" color="primary">
+          <mat-label>{{ "contact-phone" | translate }}</mat-label>
+          <input value="{{ phone }}" matInput type="text" readonly />
+          <button mat-icon-button matSuffix>
+            <mat-icon>phone</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

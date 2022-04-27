@@ -1,0 +1,53 @@
+<form *ngIf="user && user.id" (ngSubmit)="account()" [formGroup]="group">
+  <div class="container-wrapper">
+    <mat-card>
+      <mat-card-header
+        ><mat-card-title>{{
+          "account-basic-info" | translate
+        }}</mat-card-title></mat-card-header
+      >
+
+      <mat-card-content>
+        <div class="one-row">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{ "account-basic-name" | translate }}</mat-label>
+            <input formControlName="_name" matInput type="text" />
+            <button mat-icon-button matSuffix>
+              <mat-icon>emoji_people</mat-icon>
+            </button>
+            <mat-error *ngIf="group.get('_name')?.invalid">{{
+              getErrorMessage("_name")
+            }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="one-row">
+          <mat-form-field appearance="legacy" color="primary">
+            <mat-label>{{ "account-basic-email" | translate }}</mat-label>
+            <input formControlName="email" matInput type="text" />
+            <button mat-icon-button matSuffix>
+              <mat-icon>email</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+      <mat-card-actions class="flex-buttons">
+        <span class="spacer"></span>
+        <button
+          class="simple-button"
+          mat-raised-button
+          color="primary"
+          type="submit"
+          [disabled]="loading"
+        >
+          <mat-progress-bar
+            *ngIf="loading; else accountBtn"
+            mode="indeterminate"
+            class="button-progress-bar"
+          ></mat-progress-bar>
+          <ng-template #accountBtn>{{ "button-save" | translate }}</ng-template>
+        </button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</form>

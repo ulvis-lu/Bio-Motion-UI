@@ -1,0 +1,239 @@
+<ng-container *ngIf="pageIdChecked && user && user.id && user.statuss === 2">
+  <ng-container *ngIf="pageId && !pageIdInvalid; else noId">
+    <div class="container-wrapper">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>{{ name }}</mat-card-title>
+          <mat-card-subtitle class="title-statuss">
+            <span class="statuss" *ngIf="statuss === 0"
+              >[{{ "user-statuss-unconfirm" | translate }}]</span
+            >
+            <span class="statuss" *ngIf="statuss === 1"
+              >[{{ "user-statuss-simple" | translate }}]</span
+            >
+            <span class="statuss" *ngIf="statuss === 2"
+              >[{{ "user-statuss-admin" | translate }}]</span
+            >
+            <span class="statuss" *ngIf="statuss === 3"
+              >[{{ "user-statuss-delete" | translate }}]</span
+            >
+          </mat-card-subtitle>
+        </mat-card-header>
+
+        <mat-card-content>
+          <div class="form-flex">
+            <div class="one-row-flex">
+              <div class="one-row">
+                <mat-form-field appearance="legacy" color="primary">
+                  <mat-label>{{ "user-name" | translate }}</mat-label>
+                  <input value="{{ name }}" matInput type="text" readonly />
+                  <button mat-icon-button matSuffix>
+                    <mat-icon>emoji_people</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="one-row-flex">
+              <div class="one-row">
+                <mat-form-field appearance="legacy" color="primary">
+                  <mat-label>{{ "user-email" | translate }}</mat-label>
+                  <input value="{{ email }}" matInput type="text" readonly />
+                  <button mat-icon-button matSuffix>
+                    <mat-icon>email</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="one-row-flex">
+              <div class="one-row">
+                <mat-form-field appearance="legacy" color="primary">
+                  <mat-label>{{
+                    "user-last-time-online" | translate
+                  }}</mat-label>
+                  <input
+                    value="{{ onlineTime }}"
+                    matInput
+                    type="text"
+                    readonly
+                  />
+                  <button mat-icon-button matSuffix>
+                    <mat-icon>av_timer</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="one-row-flex">
+              <div class="one-row">
+                <mat-form-field appearance="legacy" color="primary">
+                  <mat-label>{{ "user-signin-time" | translate }}</mat-label>
+                  <input
+                    value="{{ signinTime }}"
+                    matInput
+                    type="text"
+                    readonly
+                  />
+                  <button mat-icon-button matSuffix>
+                    <mat-icon>av_timer</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+
+            <div class="one-row-flex">
+              <div class="one-row">
+                <mat-form-field appearance="legacy" color="primary">
+                  <mat-label>{{ "user-signup-time" | translate }}</mat-label>
+                  <input
+                    value="{{ singupTime }}"
+                    matInput
+                    type="text"
+                    readonly
+                  />
+                  <button mat-icon-button matSuffix>
+                    <mat-icon>login</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="blocked.length">
+            <mat-card-header>
+              <mat-card-subtitle class="title-statuss">
+                <span class="statuss">[{{ "user-blocked" | translate }}]</span>
+                <span class="mr4 ml20">{{
+                  "user-who-blocked" | translate
+                }}</span>
+                <a
+                  target="_blank"
+                  [routerLink]="'/admin/user/' + blocked[0].userId"
+                  >{{ blocked[0].userName }}</a
+                >
+              </mat-card-subtitle>
+            </mat-card-header>
+            <div class="form-flex">
+              <div class="one-row-flex">
+                <div class="one-row">
+                  <mat-form-field appearance="legacy" color="primary">
+                    <mat-label>{{ "user-block-time" | translate }}</mat-label>
+                    <input
+                      value="{{ blocked[0].timeBlocked }}"
+                      matInput
+                      type="text"
+                      readonly
+                    />
+                    <button mat-icon-button matSuffix>
+                      <mat-icon>av_timer</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="one-row-flex">
+                <div class="one-row">
+                  <mat-form-field appearance="legacy" color="primary">
+                    <mat-label>{{ "user-blocked-till" | translate }}</mat-label>
+                    <input
+                      value="{{
+                        blocked[0].timeUnblock
+                          ? blocked[0].timeUnblock
+                          : commonData.translate.transform(
+                              'user-block-no-time-limit'
+                            )
+                      }}"
+                      matInput
+                      type="text"
+                      readonly
+                    />
+                    <button mat-icon-button matSuffix>
+                      <mat-icon>av_timer</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+              </div>
+              <div class="one-row-flex">
+                <div class="one-row">
+                  <mat-form-field appearance="legacy" color="primary">
+                    <mat-label>{{ "user-block-reason" | translate }}</mat-label>
+                    <textarea
+                      cdkTextareaAutosize
+                      rows="1"
+                      value="{{ blocked[0].message }}"
+                      matInput
+                    ></textarea>
+                    <button mat-icon-button matSuffix>
+                      <mat-icon>message</mat-icon>
+                    </button>
+                  </mat-form-field>
+                </div>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+        <mat-card-actions class="flex-buttons">
+          <span class="spacer"></span>
+          <button
+            (click)="_confirm()"
+            *ngIf="statuss === 0"
+            class="simple-button"
+            mat-raised-button
+            type="button"
+          >
+            <mat-progress-bar
+              *ngIf="loading; else confirmBtn"
+              mode="indeterminate"
+              class="button-progress-bar"
+            ></mat-progress-bar>
+            <ng-template #confirmBtn>{{
+              "button-confirm-account-email" | translate
+            }}</ng-template>
+          </button>
+          <button
+            (click)="block()"
+            *ngIf="!blocked.length"
+            class="simple-button"
+            mat-raised-button
+            type="button"
+          >
+            <mat-progress-bar
+              *ngIf="loading; else blockBtn"
+              mode="indeterminate"
+              class="button-progress-bar"
+            ></mat-progress-bar>
+            <ng-template #blockBtn>{{
+              "button-block" | translate
+            }}</ng-template>
+          </button>
+          <button
+            (click)="unblock()"
+            *ngIf="blocked.length"
+            class="simple-button"
+            mat-raised-button
+            type="button"
+          >
+            <mat-progress-bar
+              *ngIf="loading; else unblockBtn"
+              mode="indeterminate"
+              class="button-progress-bar"
+            ></mat-progress-bar>
+            <ng-template #unblockBtn>{{
+              "button-unblock" | translate
+            }}</ng-template>
+          </button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </ng-container>
+  <ng-template #noId>
+    <mat-card class="container-wrapper">
+      <mat-card-content class="simple-text">
+        <mat-icon>error_outline</mat-icon>
+        <span>
+          {{ "no-data-user-id" | translate }}
+        </span>
+      </mat-card-content>
+    </mat-card>
+  </ng-template>
+</ng-container>
